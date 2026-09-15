@@ -1,0 +1,244 @@
+-- ==========================================
+-- EMERALD HUB - ULTRA SMOOTH KEY SYSTEM (Updated)
+-- ==========================================
+local CorrectKey = "EmeraldHubKeyUodje - Hslwoheodiejeooe"
+local GetKeyLink = "https://link4m.net/aFaMJk" -- Đã cập nhật link mới
+
+-- File lưu trữ thời gian và trạng thái key (Lưu 24h)
+local FileName = "EmeraldHub_KeyData.json"
+local CacheDuration = 24 * 60 * 60 -- 24 giờ tính bằng giây
+
+local function IsKeyValid()
+    if readfile and isfile and isfile(FileName) then
+        local success, data = pcall(function()
+            return game:GetService("HttpService"):JSONDecode(readfile(FileName))
+        end)
+        if success and data and data.ExpiryTime then
+            if os.time() < data.ExpiryTime then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+local function SaveKeyData()
+    if writefile and game:GetService("HttpService") then
+        pcall(function()
+            local data = {
+                ExpiryTime = os.time() + CacheDuration
+            }
+            writefile(FileName, game:GetService("HttpService"):JSONEncode(data))
+        end)
+    end
+end
+
+-- Nếu đã lưu key hợp lệ trong vòng 24h thì chạy thẳng script luôn, không bật UI Key
+if IsKeyValid() then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/bloxfruitsnokey/Redz/refs/heads/main/Emerald/update.luau"))()
+    return
+end
+
+local TweenService = game:GetService("TweenService")
+local CoreGui = (gethui and gethui()) or game:GetService("CoreGui") or game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+
+if CoreGui:FindFirstChild("EmeraldModernKeySystem") then
+    CoreGui.EmeraldModernKeySystem:Destroy()
+end
+
+-- Tone Màu Chủ Đạo
+local Color_Black = Color3.fromRGB(15, 15, 15)
+local Color_DarkGray = Color3.fromRGB(25, 25, 25)
+local Color_Emerald = Color3.fromRGB(46, 204, 113)
+local Color_EmeraldHover = Color3.fromRGB(39, 174, 96)
+local Color_White = Color3.fromRGB(240, 240, 240)
+local Color_Error = Color3.fromRGB(255, 75, 75)
+local Color_NormalStroke = Color3.fromRGB(50, 50, 50)
+
+-- Tạo GUI
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "EmeraldModernKeySystem"
+ScreenGui.Parent = CoreGui
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 400, 0, 220)
+MainFrame.Position = UDim2.new(0.5, -200, 0.5, -110)
+MainFrame.BackgroundColor3 = Color_Black
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+
+-- Animation Mở Menu (Pop-in)
+MainFrame.Size = UDim2.new(0, 0, 0, 0) 
+TweenService:Create(MainFrame, TweenInfo.new(0.6, Enum.EasingStyle.Elastic, Enum.EasingDirection.Out), {Size = UDim2.new(0, 400, 0, 220)}):Play()
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 12)
+MainCorner.Parent = MainFrame
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Color = Color_Emerald
+MainStroke.Thickness = 2
+MainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+MainStroke.Parent = MainFrame
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 50)
+Title.Position = UDim2.new(0, 0, 0, 10)
+Title.Text = "EMERALD HUB"
+Title.TextColor3 = Color_Emerald
+Title.Font = Enum.Font.GothamBlack
+Title.TextSize = 26
+Title.BackgroundTransparency = 1
+Title.Parent = MainFrame
+
+local SubTitle = Instance.new("TextLabel")
+SubTitle.Size = UDim2.new(1, 0, 0, 20)
+SubTitle.Position = UDim2.new(0, 0, 0, 45)
+SubTitle.Text = "Please enter your key to continue"
+SubTitle.TextColor3 = Color3.fromRGB(150, 150, 150)
+SubTitle.Font = Enum.Font.Gotham
+SubTitle.TextSize = 12
+SubTitle.BackgroundTransparency = 1
+SubTitle.Parent = MainFrame
+
+local TextBox = Instance.new("TextBox")
+TextBox.Size = UDim2.new(0.85, 0, 0, 45)
+TextBox.Position = UDim2.new(0.075, 0, 0.4, 0)
+TextBox.PlaceholderText = "Paste your key here..."
+TextBox.Text = ""
+TextBox.TextColor3 = Color_White
+TextBox.BackgroundColor3 = Color_DarkGray
+TextBox.Font = Enum.Font.GothamMedium
+TextBox.TextSize = 14
+TextBox.ClearTextOnFocus = false
+TextBox.Parent = MainFrame
+
+local TextCorner = Instance.new("UICorner")
+TextCorner.CornerRadius = UDim.new(0, 8)
+TextCorner.Parent = TextBox
+
+local TextStroke = Instance.new("UIStroke")
+TextStroke.Color = Color_NormalStroke
+TextStroke.Thickness = 1
+TextStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+TextStroke.Parent = TextBox
+
+local CheckBtn = Instance.new("TextButton")
+CheckBtn.Size = UDim2.new(0.4, 0, 0, 40)
+CheckBtn.Position = UDim2.new(0.075, 0, 0.7, 0)
+CheckBtn.Text = "Check Key"
+CheckBtn.TextColor3 = Color_Black
+CheckBtn.BackgroundColor3 = Color_Emerald
+CheckBtn.Font = Enum.Font.GothamBold
+CheckBtn.TextSize = 14
+CheckBtn.AutoButtonColor = false
+CheckBtn.Parent = MainFrame
+
+local CheckCorner = Instance.new("UICorner")
+CheckCorner.CornerRadius = UDim.new(0, 8)
+CheckCorner.Parent = CheckBtn
+
+local GetKeyBtn = Instance.new("TextButton")
+GetKeyBtn.Size = UDim2.new(0.4, 0, 0, 40)
+GetKeyBtn.Position = UDim2.new(0.525, 0, 0.7, 0)
+GetKeyBtn.Text = "Get Key"
+GetKeyBtn.TextColor3 = Color_Emerald
+GetKeyBtn.BackgroundColor3 = Color_Black
+GetKeyBtn.Font = Enum.Font.GothamBold
+GetKeyBtn.TextSize = 14
+GetKeyBtn.AutoButtonColor = false
+GetKeyBtn.Parent = MainFrame
+
+local GetKeyCorner = Instance.new("UICorner")
+GetKeyCorner.CornerRadius = UDim.new(0, 8)
+GetKeyCorner.Parent = GetKeyBtn
+
+local GetKeyStroke = Instance.new("UIStroke")
+GetKeyStroke.Color = Color_Emerald
+GetKeyStroke.Thickness = 1.5
+GetKeyStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+GetKeyStroke.Parent = GetKeyBtn
+
+-- Hiệu ứng Hover Nút
+local function AddHoverEffect(button, defaultColor, hoverColor)
+    button.MouseEnter:Connect(function()
+        TweenService:Create(button, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = hoverColor}):Play()
+    end)
+    button.MouseLeave:Connect(function()
+        TweenService:Create(button, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = defaultColor}):Play()
+    end)
+end
+AddHoverEffect(CheckBtn, Color_Emerald, Color_EmeraldHover)
+AddHoverEffect(GetKeyBtn, Color_Black, Color_DarkGray)
+
+-- Hàm Rung Lắc Mượt (Smooth Shake)
+local function SmoothShake(guiObject)
+    local originalX = -200
+    local shakeOffsets = {-12, 12, -8, 8, -4, 4, 0} 
+    
+    for _, offset in ipairs(shakeOffsets) do
+        local shakeTween = TweenService:Create(guiObject, TweenInfo.new(0.04, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+            Position = UDim2.new(0.5, originalX + offset, 0.5, -110)
+        })
+        shakeTween:Play()
+        task.wait(0.04)
+    end
+end
+
+-- ==========================================
+-- CHỨC NĂNG (LOGIC)
+-- ==========================================
+CheckBtn.MouseButton1Click:Connect(function()
+    local InputKey = TextBox.Text
+    if InputKey == CorrectKey then
+        -- Lưu lại key hợp lệ để dùng trong 24h tiếp theo
+        SaveKeyData()
+
+        TextBox.Text = "Verifying..."
+        TweenService:Create(TextBox, TweenInfo.new(0.3), {TextColor3 = Color_Emerald}):Play()
+        TweenService:Create(TextStroke, TweenInfo.new(0.3), {Color = Color_Emerald}):Play()
+        task.wait(1)
+        
+        -- Đóng UI
+        local closeTween = TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0)})
+        closeTween:Play()
+        closeTween.Completed:Wait()
+        ScreenGui:Destroy()
+        
+        -- Chạy Script
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/bloxfruitsnokey/Redz/refs/heads/main/Emerald/update.luau"))()
+    else
+        TextBox.Text = "Invalid Key!"
+        
+        TweenService:Create(TextBox, TweenInfo.new(0.2), {TextColor3 = Color_Error}):Play()
+        TweenService:Create(TextStroke, TweenInfo.new(0.2), {Color = Color_Error}):Play()
+        
+        SmoothShake(MainFrame)
+        
+        task.wait(1.5)
+        
+        TextBox.Text = ""
+        TweenService:Create(TextBox, TweenInfo.new(0.3), {TextColor3 = Color_White}):Play()
+        TweenService:Create(TextStroke, TweenInfo.new(0.3), {Color = Color_NormalStroke}):Play()
+    end
+end)
+
+GetKeyBtn.MouseButton1Click:Connect(function()
+    if setclipboard then
+        setclipboard(GetKeyLink)
+        TextBox.Text = "Copied link to clipboard!"
+        TweenService:Create(TextBox, TweenInfo.new(0.3), {TextColor3 = Color_Emerald}):Play()
+        TweenService:Create(TextStroke, TweenInfo.new(0.3), {Color = Color_Emerald}):Play()
+        task.wait(1.5)
+        TextBox.Text = ""
+        TweenService:Create(TextBox, TweenInfo.new(0.3), {TextColor3 = Color_White}):Play()
+        TweenService:Create(TextStroke, TweenInfo.new(0.3), {Color = Color_NormalStroke}):Play()
+    else
+        TextBox.Text = "Executor doesn't support Copy!"
+        TweenService:Create(TextBox, TweenInfo.new(0.3), {TextColor3 = Color_Error}):Play()
+        task.wait(1.5)
+        TextBox.Text = ""
+        TweenService:Create(TextBox, TweenInfo.new(0.3), {TextColor3 = Color_White}):Play()
+    end
+end)
